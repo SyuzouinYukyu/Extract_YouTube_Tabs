@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- Windows GUIアプリ -->
+		<OutputType>WinExe</OutputType>
+
+		<!-- 対象フレームワーク -->
+		<TargetFramework>net8.0-windows</TargetFramework>
+
+		<!-- WinForms 使用 -->
+		<UseWindowsForms>true</UseWindowsForms>
+
+		<!-- C# 推奨設定 -->
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- アプリ名 -->
+		<AssemblyName>extract_youtube_tabs_v1.0.0</AssemblyName>
+		<RootNamespace>ExtractYoutubeTabsV100</RootNamespace>
+
+		<!-- アプリ マニフェスト -->
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+
+		<!-- アプリアイコン
+         ※ app.ico を .csproj と同じフォルダへ配置 -->
+		<ApplicationIcon>app.ico</ApplicationIcon>
+
+		<!-- Windows向け -->
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+		<!-- 発行向け既定値 -->
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<PublishTrimmed>false</PublishTrimmed>
+		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- recovery.jsonlz4 展開用 -->
+		<PackageReference Include="K4os.Compression.LZ4" Version="1.3.8" />
+	</ItemGroup>
+
+</Project>
