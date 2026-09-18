@@ -1,0 +1,31 @@
+# Visual Studio / .NET
+.vs/
+**/.vs/
+bin/
+**/bin/
+obj/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Publish / build output
+publish/
+**/publish/
+artifacts/
+**/artifacts/
+
+# Local application settings and generated lists
+*_settings.json
+list.txt
+
+# Logs / temporary files
+*.log
+*.tmp
+*.bak
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
