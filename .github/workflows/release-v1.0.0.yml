@@ -1,0 +1,60 @@
+name: Build and publish v1.0.0
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '.github/workflows/release-v1.0.0.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        shell: pwsh
+        run: dotnet restore .\src\extract_youtube_tabs_v1.0.0\extract_youtube_tabs_v1.0.0.csproj
+
+      - name: Publish single EXE
+        shell: pwsh
+        run: >-
+          dotnet publish .\src\extract_youtube_tabs_v1.0.0\extract_youtube_tabs_v1.0.0.csproj
+          -c Release
+          -r win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:PublishTrimmed=false
+          -o .\publish
+
+      - name: Create SHA-256 file
+        shell: pwsh
+        run: |
+          $exe = '.\publish\extract_youtube_tabs_v1.0.0.exe'
+          $hash = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  extract_youtube_tabs_v1.0.0.exe" | Set-Content -LiteralPath '.\publish\SHA256SUMS.txt' -Encoding utf8NoBOM
+
+      - name: Create or update GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = 'v1.0.0'
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title 'Extract_YouTube_Tabs v1.0.0' --notes 'Firefox の recovery.jsonlz4 から YouTube / Shorts の動画URLを抽出し、yt-dlp向けのテキスト一覧を生成する Windows 向けツールです。'
+          }
+          gh release upload $tag '.\publish\extract_youtube_tabs_v1.0.0.exe' '.\publish\SHA256SUMS.txt' --clobber
